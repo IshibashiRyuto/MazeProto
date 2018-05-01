@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="GameTask.cpp" />
+    <ClCompile Include="ImageMgr.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="VECTOR2.cpp" />
+    <ClCompile Include="Object.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="EditCursor.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy1.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="MapCtrl.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Object\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMgr.cpp">
+      <Filter>Object\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor.cpp">
+      <Filter>Object\Charactor</Filter>
+    </ClCompile>
+    <ClCompile Include="CharactorMgr.cpp">
+      <Filter>Object\Charactor</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyMgr.cpp">
+      <Filter>Object\Enemy</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameTask.h" />
+    <ClInclude Include="ImageMgr.h" />
+    <ClInclude Include="VECTOR2.h" />
+    <ClInclude Include="Object.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="EditCursor.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy1.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="MapCtrl.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Object\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMgr.h">
+      <Filter>Object\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor.h">
+      <Filter>Object\Charactor</Filter>
+    </ClInclude>
+    <ClInclude Include="CharactorMgr.h">
+      <Filter>Object\Charactor</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyMgr.h">
+      <Filter>Object\Enemy</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Object">
+      <UniqueIdentifier>{348f210c-669e-42db-ac8c-250c672caf78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Enemy">
+      <UniqueIdentifier>{16a9124d-0622-4821-a611-3075c4c8e0b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map">
+      <UniqueIdentifier>{29017e4c-8b1b-4cc3-a5ea-98b7dd11266b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Camera">
+      <UniqueIdentifier>{1a99761e-fe45-4239-b606-d40ae3c19af0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Charactor">
+      <UniqueIdentifier>{6b60ea18-120a-4d46-b367-60266aa6faf6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

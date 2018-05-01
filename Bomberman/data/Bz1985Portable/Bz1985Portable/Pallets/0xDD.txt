@@ -1,0 +1,5 @@
+/* 0xDDÇæÇØê‘Ç≈ï\é¶ */
+
+bg #000000 //Black
+def rgb(0xFF, 0xFF, 0xFF) //White
+0xDD rgb(255,0,0) /*Red*/
