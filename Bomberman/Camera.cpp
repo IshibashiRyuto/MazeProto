@@ -42,6 +42,10 @@ void Camera::SetMove()
 		{
 			moveKeyID = 0;
 		}
+		if (lpMapCtrl->GetMapData(pos, drawDir) == MAP_SCREEN)
+		{
+			moveKeyID = 0;
+		}
 	}
 	if (moveFlg)
 	{

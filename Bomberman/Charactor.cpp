@@ -19,19 +19,31 @@ void Charactor::SetMove()
 		if (pos.x % lpGameTask->chipSize.x == 0 && pos.y % lpGameTask->chipSize.y == 0)
 		{
 			auto moveDir = GetRightHandDir(drawDir);
-			
+			int check[4];
+
+			int cnt = 0;
 			while (!lpMapCtrl->IsMove(pos, moveDir))
 			{
+				check[moveDir] = 1;
 				for (int i = 0; i < 3; ++i)
 				{
 					moveDir = GetRightHandDir(moveDir);
+				}
+				cnt++;
+				if (cnt >= 4)
+				{
+					moveDir = DIR_DEATH;
+					break;
 				}
 			}
 			//“GƒT[ƒ`
 			
 
 			//Œˆ’è‚µ‚½ˆÚ“®•ûŒü‚ÉŠî‚Ã‚¢‚ÄˆÚ“®“ü—Í
-			drawDir = moveDir;
+			if (moveDir != DIR_DEATH)
+			{
+				drawDir = moveDir;
+			}
 			switch (moveDir)
 			{
 			case DIR_DOWN:
@@ -46,6 +58,8 @@ void Charactor::SetMove()
 			case DIR_RIGHT:
 				moveKeyID = KEY_INPUT_NUMPAD6;
 				break;
+			default:
+				moveKeyID = KEY_INPUT_NUMPAD5;
 			}
 		
 		}

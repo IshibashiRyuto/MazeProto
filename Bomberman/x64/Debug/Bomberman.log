@@ -1,6 +1,4 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(387,5): warning MSB8028: 中間ディレクトリ (x64\Debug\) に別のプロジェクト (Bomberman.vcxproj) と共有されているファイルが含まれています。これにより、クリーンしてリビルド動作が適切に行われない可能性があります。
-  MapCtrl.cpp
   Charactor.cpp
-  コードを生成中...
-  Bomberman.vcxproj -> C:\Users\drago\Desktop\Maze_Proto\x64\Debug\Maze_Proto.exe
-  Bomberman.vcxproj -> C:\Users\drago\Desktop\Maze_Proto\x64\Debug\Maze_Proto.pdb (Partial PDB)
+  Bomberman.vcxproj -> C:\Users\drago\Desktop\Maze_Proto\MazeProto\x64\Debug\Maze_Proto.exe
+  Bomberman.vcxproj -> C:\Users\drago\Desktop\Maze_Proto\MazeProto\x64\Debug\Maze_Proto.pdb (Partial PDB)
