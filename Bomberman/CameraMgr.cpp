@@ -1,6 +1,7 @@
 #include "CameraMgr.h"
 #include "Camera.h"
 #include"CharactorMgr.h"
+#include "EnemyMgr.h"
 
 CameraMgr* CameraMgr::s_Instance;
 

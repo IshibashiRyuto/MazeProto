@@ -41,6 +41,9 @@ public:
 	bool GetState()const;
 
 	bool IsEnemy(const VECTOR2& pos) const;
+	void StopEnemy(const VECTOR2& pos,int stopCnt) const;
+
+	void SetOnDammyFlg(bool flg);
 
 private:
 	EnemyMgr();

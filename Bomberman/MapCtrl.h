@@ -26,12 +26,14 @@ enum MAP_ID
 	MAP_CAMERA,
 	MAP_PLAYER,
 	MAP_ENEMY,
+	MAP_EDIT_CURSOR,
+	MAP_WALL,
 	MAP_ID_MAX
 };
 
 
 #define START_EDIT_CHIP MAP_NON
-#define END_EDIT_CHIP MAP_ENEMY
+#define END_EDIT_CHIP MAP_WALL
 #define START_GAME_CHIP MAP_NON
 #define END_GAME_CHIP MAP_INTERSECTION
 
@@ -62,7 +64,7 @@ struct DataHeader
 
 
 using VEC_MAP_ID = std::vector<std::vector<MAP_ID>>;
-using VEC_ITEM_MAP_ID = std::vector<std::vector<bool>>;
+using VEC_NEXT_MAP = std::vector<std::vector<bool>>;
 using VEC_OBJ_MAP_ID = std::vector<std::vector<MAP_ID>>;
 
 class Camera;
@@ -98,7 +100,7 @@ public:
 	MAP_ID GetMapData(const VECTOR2& pos, DRAW_DIR dir) const;
 
 	///現在位置から指定方向への移動が可能かチェック
-	bool IsMove(const VECTOR2& pos,DRAW_DIR dir) const;
+	bool IsMove(const VECTOR2& pos,DRAW_DIR dir,bool dammyCheck=false) const;
 
 	///オブジェマップのデータを得る
 	MAP_ID GetObjMapData(const VECTOR2& pos) const;
@@ -117,12 +119,23 @@ public:
 	///カメラオブジェクトをマップに関連付ける
 	void SetCamera(Camera* pCamera);
 
+
+	/// 2点間のマップ上でのマンハッタン距離を返す
+	int GetManhattanDistance(const VECTOR2& pos1, const VECTOR2& pos2);
+
+	/// 現在のカメラ位置から指定回数移動した場合に到達可能な場所をマップに記録する
+	void SetNextMap(int moveCnt);
+
+	void SetNextDraw(bool flg);
+
+
 	const VECTOR2 mapSize{ 38, 28 };
 private:
 	MapCtrl();
 	bool _FillMapData(MAP_ID id, int x, int y, MAP_ID fillTarget);
 	static MapCtrl* s_inst;
 	VEC_MAP_ID mapData;
+	VEC_NEXT_MAP nextScreenMap;
 	VEC_OBJ_MAP_ID objMapData;
 	std::shared_ptr<Camera> camera;
 
@@ -132,5 +145,9 @@ private:
 	MAP_ID GetCameraMapData() const;
 	///カメラがある座標のマップオブジェクトを返す
 	MAP_ID GetCameraObjMapData() const;
+
+	//SetNextMap用の再帰
+	void NextMapRecursion(int x,int y, int moveCnt);
+	bool nextDrawFlg{ false };
 };
 

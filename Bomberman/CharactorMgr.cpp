@@ -1,6 +1,7 @@
 #include "CharactorMgr.h"
 #include "Charactor.h"
 #include "EnemyMgr.h"
+#include "MapCtrl.h"
 
 CharactorMgr* CharactorMgr::s_Instance;
 
@@ -18,9 +19,19 @@ void CharactorMgr::SetMoveFlg(bool moveFlg)
 	state = moveFlg;
 }
 
+void CharactorMgr::SetOnDammyFlg(bool flg)
+{
+	for (auto chara : charactorList)
+	{
+		chara->SetDammyFlg(flg);
+	}
+}
+
 void CharactorMgr::Update()
 {
-	if(state)
+	bool moveFlg = false;
+
+//	if(state)
 	{
 		for (auto chara = charactorList.begin(); chara != charactorList.end(); ++chara)
 		{
@@ -29,7 +40,6 @@ void CharactorMgr::Update()
 				charactorList.erase(chara);
 			}
 		}
-		bool moveFlg = false;
 		for (auto chara : charactorList)
 		{
 			chara->Update();
@@ -38,6 +48,9 @@ void CharactorMgr::Update()
 				moveFlg = true;
 			}
 		}
+	}
+
+	if (state){
 		if (!moveFlg)
 		{
 			//“G‚ÌˆÚ“®ƒtƒ‰ƒO‚ðOn‚É
@@ -59,6 +72,34 @@ void CharactorMgr::Draw()
 bool CharactorMgr::GetState() const
 {
 	return state;
+}
+
+
+void CharactorMgr::PushedWall(DRAW_DIR pushDir)
+{
+	for (auto chara : charactorList)
+	{
+		if (lpMapCtrl->GetMapData(chara->GetPos()) == MAP_SCREEN)
+		{
+			VECTOR2 tmp;
+			switch(pushDir)
+			{
+			case DIR_DOWN:
+				tmp.y = lpGameTask->chipSize.y;
+				break;
+			case DIR_UP:
+				tmp.y = -lpGameTask->chipSize.y;
+				break;
+			case DIR_LEFT:
+				tmp.x = -lpGameTask->chipSize.x;
+				break;
+			case DIR_RIGHT:
+				tmp.x = lpGameTask->chipSize.x;
+				break;
+			}
+			chara->SetPos(chara->GetPos() + tmp);
+		}
+	}
 }
 
 bool CharactorMgr::IsCharactor(const VECTOR2 & pos) const

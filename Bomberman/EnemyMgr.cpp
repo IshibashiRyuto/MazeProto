@@ -1,6 +1,7 @@
 #include "EnemyMgr.h"
 #include "Enemy.h"
 #include"CameraMgr.h"
+#include "CharactorMgr.h"
 #include"MapCtrl.h"
 
 EnemyMgr* EnemyMgr::s_Instance;
@@ -31,7 +32,8 @@ void EnemyMgr::SetMoveFlg(bool moveFlg)
 
 void EnemyMgr::Update()
 {
-	if (state)
+	bool moveFlg = false;
+	//if (state)
 	{
 		lpMapCtrl->ClearObjMap(MAP_ENEMY);
 		for (auto enemy = enemyList.begin(); enemy != enemyList.end(); ++enemy)
@@ -41,7 +43,6 @@ void EnemyMgr::Update()
 				enemyList.erase(enemy);
 			}
 		}
-		bool moveFlg = false;
 		for (auto enemy : enemyList)
 		{
 			enemy->Update();
@@ -51,10 +52,16 @@ void EnemyMgr::Update()
 				moveFlg = true;
 			}
 		}
+	}
+	if (state)
+	{
 		if (!moveFlg)
 		{
 			//カメラの移動フラグをOnに
 			lpCameraMgr->SetMoveFlg(true);
+			//キャラクタの移動ダミーのフラグをOnに
+			lpCharactorMgr->SetOnDammyFlg(true);
+			this->SetOnDammyFlg(true);
 			state = false;
 		}
 	}
@@ -84,4 +91,23 @@ bool EnemyMgr::IsEnemy(const VECTOR2& pos) const
 		}
 	}
 	return false;
+}
+
+void EnemyMgr::StopEnemy(const VECTOR2 & pos, int stopCnt) const
+{
+	for (auto enemy : enemyList)
+	{
+		if (enemy->GetPos() == pos)
+		{
+			enemy->SetStopCnt(stopCnt);
+		}
+	}
+}
+
+void EnemyMgr::SetOnDammyFlg(bool flg)
+{
+	for (auto enemy : enemyList)
+	{
+		enemy->SetDammyFlg(flg);
+	}
 }

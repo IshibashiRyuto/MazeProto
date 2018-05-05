@@ -3,6 +3,12 @@
 #include "VECTOR2.h"
 #include "GameTask.h"
 
+
+
+#define NUM_READ_MOVE 3
+#define MOVE_WAIT_CNT 20
+
+
 enum OBJECT_TYPE
 {
 	OBJECT_TYPE_PLAYER,
@@ -32,7 +38,7 @@ class Object
 public:
 	Object(const VECTOR2& drawOffset, char (&keyData)[256],char (&keyDataOld)[256]);
 	virtual ~Object();
-	void Init(std::string fileName, VECTOR2 divSize, VECTOR2 divCnt, VECTOR2 chipOffset, int speed, int animSpeed = 10, int stateAnimDiv = 2);
+	virtual void Init(std::string fileName, VECTOR2 divSize, VECTOR2 divCnt, VECTOR2 chipOffset, int speed, int animSpeed = 10, int stateAnimDiv = 2);
 
 
 	const VECTOR2 & GetPos();
@@ -56,6 +62,10 @@ public:
 	virtual void SetMoveFlg(bool flg);
 	virtual bool GetMoveFlg() const;
 
+	void SetDir(DRAW_DIR dir);
+
+	void SetStopCnt(int stopCnt);
+
 protected:
 	VECTOR2 pos;			// キャラの位置(描画位置
 	int speed;
@@ -75,8 +85,11 @@ protected:
 	STATE state;
 
 	int moveKeyID;		//移動方向のキーデータ
+	const float PI = 3.14159265f;
 
 	bool moveFlg{ false };		//移動可能か判定するフラグ
+	float angle[4];
+	int stopCnt{ 0 };
 
 	///指定した方向の右回り90度方向を返す
 	DRAW_DIR GetRightHandDir(const DRAW_DIR dir);

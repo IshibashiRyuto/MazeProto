@@ -66,6 +66,20 @@ bool MapCtrl::reSetUp(MAP_ID resetWall)
 		}
 	}
 
+	nextScreenMap.resize(mapSize.y);
+	for (unsigned int y = 0; y < nextScreenMap.size(); ++y )
+	{
+		nextScreenMap[y].resize(mapSize.x);
+	}
+
+
+	for (unsigned int y = 0; y < nextScreenMap.size(); y++)
+	{
+		for (unsigned int x = 0; x < nextScreenMap[y].size(); x++)
+		{
+			nextScreenMap[y][x] = MAP_NON;
+		}
+	}
 
 	return true;
 }
@@ -239,24 +253,40 @@ void MapCtrl::MapDraw()
 			switch (gameMode)
 			{
 			case GMODE_EDIT_MAIN:
+				if (mapChipData == MAP_WALL)
+				{
+					auto a = 5;
+				}
 				if (mapChipData >= START_EDIT_CHIP && mapChipData <= END_EDIT_CHIP)
 				{
 					DrawGraph(drawOffset.x + chipSize.x * x, drawOffset.y + chipSize.y * y, image[mapChipData], true);
 				}
+				
 				break;
 			case GMODE_GAME_MAIN:
-				if (mapData[y][x] >= START_GAME_CHIP && mapData[y][x] <= END_GAME_CHIP)
+				if ( (mapData[y][x] >= START_GAME_CHIP && mapData[y][x] <= END_GAME_CHIP) || (mapData[y][x] == MAP_WALL) )
 				{
 					DrawGraph(drawOffset.x + chipSize.x * x, drawOffset.y + chipSize.y * y, image[mapChipData], true);
 				}
 				else if (mapData[y][x] == MAP_SCREEN)
 				{
 					DrawGraph(drawOffset.x + chipSize.x * x, drawOffset.y + chipSize.y * y, image[GetCameraMapData()], true);
-					auto objData = GetCameraObjMapData();					
+					auto objData = GetCameraObjMapData();
 					SetDrawBlendMode(DX_BLENDMODE_ALPHA, 64);
 
 					DrawBox(drawOffset.x + chipSize.x * x, drawOffset.y + chipSize.y * y, drawOffset.x + chipSize.x * (x+1), drawOffset.y + chipSize.y * (y+1), 0xff0000, true);
 					SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+				}
+				if (nextDrawFlg)
+				{
+					if (nextScreenMap[y][x])
+					{
+
+						SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+
+						DrawBox(drawOffset.x + chipSize.x * x + 2, drawOffset.y + chipSize.y * y + 2, drawOffset.x + chipSize.x * (x + 1) - 2, drawOffset.y + chipSize.y * (y + 1) - 2, 0xffff00, true);
+						SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+					}
 				}
 				break;
 			default:
@@ -459,6 +489,24 @@ MAP_ID MapCtrl::GetCameraObjMapData() const
 	return GetObjMapData(pos);
 }
 
+void MapCtrl::NextMapRecursion(int x, int y, int moveCnt)
+{
+	if (y < 0 || y >= nextScreenMap.size() || x < 0 || x >= nextScreenMap.size() || mapData[y][x] == MAP_SCREEN || mapData[y][x] == MAP_WALL || mapData[y][x] == MAP_NON)
+	{
+		return;
+	}
+	if ( moveCnt == 0)
+	{
+		nextScreenMap[y][x] = true;
+		return;
+	}
+
+	NextMapRecursion(x+1, y, moveCnt - 1);
+	NextMapRecursion(x, y+1, moveCnt - 1);
+	NextMapRecursion(x-1, y, moveCnt - 1);
+	NextMapRecursion(x, y-1, moveCnt - 1);
+}
+
 MAP_ID MapCtrl::GetMapData(const VECTOR2 & vec) const
 {
 	VECTOR2 pos(vec.x / lpGameTask->chipSize.x, vec.y / lpGameTask->chipSize.y);
@@ -507,17 +555,31 @@ MAP_ID MapCtrl::GetMapData(const VECTOR2 & vec, DRAW_DIR dir) const
 	return MAP_NON;
 }
 
-bool MapCtrl::IsMove(const VECTOR2& pos,DRAW_DIR dir) const
+bool MapCtrl::IsMove(const VECTOR2& pos,DRAW_DIR dir, bool dammyCheck) const
 {
 	auto nowMapData = GetMapData(pos);
 	auto nextMapData = GetMapData(pos, dir);
-	if (nowMapData == MAP_SCREEN)
+	if (dammyCheck)
 	{
-		nowMapData = GetCameraMapData();
+		if (nowMapData == MAP_SCREEN)
+		{
+			nowMapData = MAP_INTERSECTION;
+		}
+		if (nextMapData == MAP_SCREEN)
+		{
+			nextMapData = MAP_INTERSECTION;
+		}
 	}
-	if (nextMapData == MAP_SCREEN)
+	else
 	{
-		nextMapData = GetCameraMapData();
+		if (nowMapData == MAP_SCREEN)
+		{
+			nowMapData = GetCameraMapData();
+		}
+		if (nextMapData == MAP_SCREEN)
+		{
+			nextMapData = GetCameraMapData();
+		}
 	}
 	if (nowMapData & MOVABLE_NOW[dir] && nextMapData & MOVABLE_NEXT[dir])
 	{
@@ -603,7 +665,7 @@ void MapCtrl::SetObjMap(const VECTOR2 & vec, MAP_ID mapObj)
 	VECTOR2 pos(vec.x / lpGameTask->chipSize.x, vec.y / lpGameTask->chipSize.y);
 
 	if (pos.y >= 0 && (unsigned)pos.y < mapData.size()
-		&& pos.x >= 0 && (unsigned)pos.x < mapData[pos.y].size())
+		&& pos.x >= 0 && (unsigned)pos.x < mapData[pos.y].size() && mapObj > MAP_SCREEN)
 	{
 		objMapData[pos.y][pos.x] = mapObj;
 	}
@@ -613,5 +675,45 @@ void MapCtrl::SetObjMap(const VECTOR2 & vec, MAP_ID mapObj)
 void MapCtrl::SetCamera(Camera * pCamera)
 {
 	camera.reset(pCamera);
+}
+
+int MapCtrl::GetManhattanDistance(const VECTOR2 & pos1, const VECTOR2 & pos2)
+{
+	auto chipSize = lpGameTask->chipSize;
+	auto mapPos1 = pos1;
+	auto mapPos2 = pos2;
+	
+	mapPos1.x = mapPos1.x / chipSize.x;
+	mapPos1.y = mapPos1.y / chipSize.y;
+	mapPos2.x = mapPos2.x / chipSize.x;
+	mapPos2.y = mapPos2.y / chipSize.y;
+
+	auto disX = abs(mapPos1.x - mapPos2.x);
+	auto disY = abs(mapPos1.y - mapPos2.y);
+
+	return disX + disY;
+}
+
+void MapCtrl::SetNextMap(int moveCnt)
+{
+	auto chipSize = lpGameTask->chipSize;
+	auto cameraPos = camera->GetPos();
+	int x = cameraPos.x / chipSize.x;
+	int y = cameraPos.y / chipSize.y;
+	
+	for (int y = 0; y < nextScreenMap.size(); ++y)
+	{
+		for (int x = 0; x < nextScreenMap[y].size(); ++x)
+		{
+			nextScreenMap[y][x] = false;
+		}
+	}
+	NextMapRecursion(x, y, moveCnt);
+
+}
+
+void MapCtrl::SetNextDraw(bool flg)
+{
+	nextDrawFlg = flg;
 }
 

@@ -2,6 +2,7 @@
 #include<vector>
 #include<memory>
 #include"VECTOR2.h"
+#include"Object.h"
 
 #define lpCharactorMgr CharactorMgr::GetInstance()
 class Charactor;
@@ -36,10 +37,11 @@ public:
 
 	void AddCharactor(Charactor* charactor);
 	void SetMoveFlg(bool moveFlg);
+	void SetOnDammyFlg(bool flg);
 	void Update();
 	void Draw();
 	bool GetState() const;
-
+	void PushedWall(DRAW_DIR pushDir);
 	bool IsCharactor(const VECTOR2& pos) const;
 private:
 	CharactorMgr();

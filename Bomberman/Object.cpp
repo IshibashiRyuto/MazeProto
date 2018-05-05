@@ -2,12 +2,16 @@
 #include "DxLib.h"
 #include "ImageMgr.h"
 
-Object::Object(const VECTOR2& drawOffset, char (&_keyData)[256], char (&_keyDataOld)[256]) : keyData(_keyData), keyDataOld(_keyDataOld)
+Object::Object(const VECTOR2& drawOffset, char(&_keyData)[256], char(&_keyDataOld)[256]) : keyData(_keyData), keyDataOld(_keyDataOld)
 {
 	pos = VECTOR2(0, 0);
 	active = false;
 	this->drawOffset = drawOffset;
 	imageName = "";
+	angle[DIR_UP] = 0.0f;
+	angle[DIR_LEFT] = PI * 3 / 2;
+	angle[DIR_RIGHT] = PI / 2;
+	angle[DIR_DOWN] = PI;
 }
 
 
@@ -108,6 +112,16 @@ void Object::SetMoveFlg(bool flg)
 bool Object::GetMoveFlg() const
 {
 	return moveFlg;
+}
+
+void Object::SetDir(DRAW_DIR dir)
+{
+	drawDir = dir;
+}
+
+void Object::SetStopCnt(int stopCnt)
+{
+	this->stopCnt = stopCnt;
 }
 
 DRAW_DIR Object::GetRightHandDir(const DRAW_DIR dir)
